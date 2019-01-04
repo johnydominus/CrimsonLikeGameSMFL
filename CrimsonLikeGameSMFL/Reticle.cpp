@@ -15,19 +15,29 @@ Reticle::~Reticle()
 	ShowCursor(true);
 }
 
-POINT* Reticle::getPosition()
+POINT * Reticle::getScreenPosition()
+{
+	return &screenPosition;
+}
+
+aPOINT* Reticle::getPosition()
 {
 	return &Position;
 }
 
-POINT* Reticle::getRelatPosition()
+aPOINT* Reticle::getRelatPosition()
 {
 	return &relatPosition;
 }
 
-sf::Sprite Reticle::getSprite()
+std::vector<float>* Reticle::getDirection()
 {
-	return mSprite;
+	return &direction;
+}
+
+sf::Sprite* Reticle::getSprite()
+{
+	return &mSprite;
 }
 
 void Reticle::setPosition(float x, float y)
@@ -42,6 +52,12 @@ void Reticle::setRelativePosition(float x, float y)
 	relatPosition.y = y;
 }
 
+void Reticle::setScreenPosition(float x, float y)
+{
+	screenPosition.x = x;
+	screenPosition.y = y;
+}
+
 void Reticle::setPlayer(Player * aPlayer)
 {
 	thePlayer = aPlayer;
@@ -49,16 +65,16 @@ void Reticle::setPlayer(Player * aPlayer)
 
 void Reticle::update()
 {
-	GetCursorPos(&relatPosition);
+	GetCursorPos(&screenPosition);
 
 	playerRelatPosition = *(thePlayer->getRelatPosition());
 	playerPosition = *(thePlayer->getPosition());
 
-	Position.x = playerPosition.x + (relatPosition.x - playerRelatPosition.x);
-	Position.y = playerPosition.y + (relatPosition.y - playerRelatPosition.y);
+	Position.x = playerPosition.x + (screenPosition.x - playerRelatPosition.x);
+	Position.y = playerPosition.y + (screenPosition.y - playerRelatPosition.y);
 
-	direction[0] = Position.x - thePlayer->Position.x;
-	direction[1] = Position.y - thePlayer->Position.y;
+	direction[0] = Position.x - thePlayer->getPosition()->x;
+	direction[1] = Position.y - thePlayer->getPosition()->y;
 
 	pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
 

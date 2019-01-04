@@ -10,17 +10,16 @@ Map::Map()
 	Position.y = 0;
 }
 
-
 Map::~Map()
 {
 }
 
-POINT* Map::getPosition()
+aPOINT* Map::getPosition()
 {
 	return &Position;
 }
 
-POINT* Map::getRelatPosition()
+aPOINT* Map::getRelatPosition()
 {
 	return &relatPosition;
 }
@@ -30,9 +29,9 @@ std::vector<float>* Map::getSize()
 	return &size;
 }
 
-sf::Sprite Map::getSprite()
+sf::Sprite* Map::getSprite()
 {
-	return mSprite;
+	return &mSprite;
 }
 
 void Map::setPosition(float x, float y)
@@ -47,19 +46,7 @@ void Map::setRelativePosition(float x, float y)
 	relatPosition.y = y;
 }
 
-void Map::setRelativePosition(int x, int y)
-{
-	relatPosition.x = x;
-	relatPosition.y = y;
-}
-
 void Map::setSize(float x, float y)
-{
-	size[0] = x;
-	size[1] = y;
-}
-
-void Map::setSize(int x, int y)
 {
 	size[0] = x;
 	size[1] = y;

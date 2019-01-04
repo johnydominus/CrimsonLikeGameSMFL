@@ -14,14 +14,24 @@ Player::~Player()
 {
 }
 
-POINT* Player::getPosition()
+aPOINT* Player::getPosition()
 {
 	return &Position;
 }
 
-POINT* Player::getRelatPosition()
+aPOINT* Player::getRelatPosition()
 {
 	return &relatPosition;
+}
+
+aPOINT * Player::getPrevPosition()
+{
+	return &prevPosition;
+}
+
+aRECT * Player::getShape()
+{
+	return &shape;
 }
 
 std::vector<float>* Player::getSize()
@@ -29,9 +39,9 @@ std::vector<float>* Player::getSize()
 	return &size;
 }
 
-sf::Sprite Player::getSprite()
+sf::Sprite* Player::getSprite()
 {
-	return mSprite;
+	return &mSprite;
 }
 
 float * Player::getSpeed()
@@ -125,34 +135,34 @@ void Player::stopDown()
 
 void Player::update(float elapsedTime)
 {
-	if (rightPressed /*&& ((Position.x + speed * elapsedTime < mapSize[0]))*/) 
+	if (rightPressed && ((Position.x + speed * elapsedTime < mapSize[0]))) 
 		Position.x += speed * elapsedTime;
-	//else if (rightPressed && ((Position.x + speed * elapsedTime >= mapSize[0]))) 
-	//	Position.x = mapSize[0];
+	else if (rightPressed && ((Position.x + speed * elapsedTime >= mapSize[0]))) 
+		Position.x = mapSize[0];
 
-	if (leftPressed /*&& ((Position.x - speed * elapsedTime > 0))*/)
+	if (leftPressed && (Position.x - speed * elapsedTime > 0))
 		Position.x -= speed * elapsedTime;
-	//else if (leftPressed && ((Position.x - speed * elapsedTime <= 0)))
-	//	Position.x = 0;
+	else if (leftPressed && ((Position.x - speed * elapsedTime <= 0)))
+		Position.x = 0;
 
-	if (upPressed /*&& ((Position.y + speed * elapsedTime < mapSize[1]))*/) 
+	if (upPressed && (Position.y + speed * elapsedTime > 0)) 
 		Position.y -= speed * elapsedTime;
-	//else if (upPressed && ((Position.y + speed * elapsedTime >= mapSize[1])))
-	//	Position.y = mapSize[1];
+	else if (upPressed && ((Position.y + speed * elapsedTime >= mapSize[1])))
+		Position.y = 0;
 
-	if (downPressed /*&& ((Position.y + speed * elapsedTime > 0))*/) 
+	if (downPressed && ((Position.y + speed * elapsedTime < mapSize[1]))) 
 		Position.y += speed * elapsedTime;
-	//else if(downPressed && ((Position.y + speed * elapsedTime > 0)))
-	//	Position.y = 0;
+	else if(downPressed && ((Position.y + speed * elapsedTime >= mapSize[1])))
+		Position.y = mapSize[1];
 
 	relatMovement[0] = (float)Position.x - (float)prevPosition.x;
 	relatMovement[1] = (float)Position.y - (float)prevPosition.y;
 
 	prevPosition = Position;
 
-	//shape.left = Position.x - (size[0] / 2.0);
-	//shape.right = Position.x + (size[0] / 2.0);
-	//shape.top = Position.y - (size[1] / 2.0);
-	//shape.bottom = Position.y + (size[1] / 2.0);
+	shape.left = Position.x - (size[0] / 2.0);
+	shape.right = Position.x + (size[0] / 2.0);
+	shape.top = Position.y - (size[1] / 2.0);
+	shape.bottom = Position.y + (size[1] / 2.0);
 }
 

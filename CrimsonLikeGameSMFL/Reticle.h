@@ -7,29 +7,35 @@ class Reticle :
 	public Object
 {
 private:
+	sf::Sprite mSprite;
 	sf::Texture mTexture;
+
+	POINT screenPosition;
+	aPOINT relatPosition;
+	aPOINT Position;
+	aPOINT playerPosition;
+	aPOINT playerRelatPosition;
+	std::vector<float> direction{ 0,0 };
+	
+	float pathLength;
+
 	Player* thePlayer;
-	POINT playerPosition;
-	POINT playerRelatPosition;
 
 public:
 	Reticle();
 	~Reticle();
 
-	POINT Position;
-	POINT relatPosition;
-	std::vector<float> direction{ 0,0 };
-	float pathLength;
-	sf::Sprite mSprite;
+	sf::Sprite* getSprite();
 
-	POINT* getPosition();
-	POINT* getRelatPosition();
-	sf::Sprite getSprite();
+	POINT* getScreenPosition();
+	aPOINT* getPosition();
+	aPOINT* getRelatPosition();
+	std::vector<float>* getDirection();
 
 	void setPosition(float x, float y);
 	void setRelativePosition(float x, float y);
+	void setScreenPosition(float x, float y);
 	void setPlayer(Player* aPlayer);
 
 	void update();
 };
-

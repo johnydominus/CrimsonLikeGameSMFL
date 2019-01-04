@@ -15,14 +15,19 @@ Monster::~Monster()
 {
 }
 
-POINT* Monster::getPosition()
+aPOINT* Monster::getPosition()
 {
 	return &Position;
 }
 
-POINT* Monster::getRelatPosition()
+aPOINT* Monster::getRelatPosition()
 {
 	return &relatPosition;
+}
+
+aRECT * Monster::getShape()
+{
+	return &shape;
 }
 
 std::vector<float>* Monster::getSize()
@@ -30,12 +35,12 @@ std::vector<float>* Monster::getSize()
 	return &size;
 }
 
-sf::Sprite Monster::getSprite()
+sf::Sprite* Monster::getSprite()
 {
-	return mSprite;
+	return &mSprite;
 }
 
-int * Monster::getSpeed()
+float * Monster::getSpeed()
 {
 	return &speed;
 }
@@ -45,7 +50,7 @@ bool * Monster::isAlive()
 	return &alive;
 }
 
-void Monster::setPosition(POINT newPosition)
+void Monster::setPosition(aPOINT newPosition)
 {
 	Position = newPosition;
 }
@@ -62,7 +67,7 @@ void Monster::setSize(float x, float y)
 	size[1] = y;
 }
 
-void Monster::setSpeed(int x)
+void Monster::setSpeed(float x)
 {
 	speed = x;
 }
@@ -82,7 +87,7 @@ void Monster::setMap(Map * aMap)
 	theMap = aMap;
 }
 
-POINT Monster::checkUpdate(float elapsedTime)
+aPOINT Monster::checkUpdate(float elapsedTime)
 {
 	nextStep = Position;
 	playerPosition = *(thePlayer->getPosition());
@@ -95,8 +100,8 @@ POINT Monster::checkUpdate(float elapsedTime)
 	direction[0] /= pathLength;
 	direction[1] /= pathLength;
 
-	vSpeed[0] = ((float)direction[0] * (float)speed)/10.0;
-	vSpeed[1] = ((float)direction[1] * (float)speed)/10.0;
+	vSpeed[0] = (direction[0] * speed)/10.0;
+	vSpeed[1] = (direction[1] * speed)/10.0;
 
 	nextStep.x += vSpeed[0];
 	nextStep.y += vSpeed[1];
@@ -104,9 +109,10 @@ POINT Monster::checkUpdate(float elapsedTime)
 	return nextStep;
 }
 
-void Monster::update(float elapsedTime, POINT aNextStep)
+void Monster::update(float elapsedTime, aPOINT aNextStep)
 {
 	Position = aNextStep;
+
 	playerPosition = *(thePlayer->getPosition());
 	playerRelatPosition = *(thePlayer->getRelatPosition());
 

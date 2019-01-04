@@ -9,46 +9,50 @@ class Monster :
 	public Object
 {
 private:
-	std::vector<float> size{30,20};
+	sf::Sprite mSprite;
 	sf::Texture mTexture;
-	int speed=4;
-	bool alive;
-	float pathLength;
-	Player* thePlayer;
-	Map* theMap;
-	POINT playerPosition;
-	POINT playerRelatPosition;
-	POINT nextStep;
-	std::vector<float> playerRelatMovement{0,0};
+
+	aPOINT Position;
+	aPOINT relatPosition;
+	aPOINT playerPosition;
+	aPOINT playerRelatPosition;
+	aPOINT nextStep;
+	aRECT shape;
+
+	std::vector<float> size{ 30,30 };
+	std::vector<float> playerRelatMovement{ 0,0 };
 	std::vector<float> direction{ 0,0 };
 	std::vector<float> vSpeed{ 0,0 };
+
+	float speed;
+	float pathLength;
+	bool alive;
+
+	Player* thePlayer;
+	Map* theMap;
 
 public:
 	Monster();
 	~Monster();
 
-	POINT Position;
-	POINT relatPosition;
-	sf::Sprite mSprite;
-	RECT shape;
-
-	POINT* getPosition();
-	POINT* getRelatPosition();
+	aPOINT* getPosition();
+	aPOINT* getRelatPosition();
+	aRECT* getShape();
 	std::vector<float>* getSize();
-	sf::Sprite getSprite();
-	int* getSpeed();
+	sf::Sprite* getSprite();
+	float* getSpeed();
 	bool* isAlive();
 
-	void setPosition(POINT newPosition);
+	void setPosition(aPOINT newPosition);
 	void setRelativePosition(float x, float y);
 	void setSize(float x, float y);
-	void setSpeed(int x);
+	void setSpeed(float x);
 	void setAlive(bool x);
 
 	void setPlayer(Player* aPlayer);
 	void setMap(Map* aMap);
 
-	POINT checkUpdate(float elapsedTime);
-	void update(float elapsedTime, POINT position);
+	aPOINT checkUpdate(float elapsedTime);
+	void update(float elapsedTime, aPOINT position);
 };
 

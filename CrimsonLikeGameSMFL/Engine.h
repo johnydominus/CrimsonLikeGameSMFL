@@ -1,4 +1,5 @@
 #pragma once
+#include "Object.h"
 #include "Player.h"
 #include "Map.h"
 #include "Reticle.h"
@@ -26,8 +27,15 @@ private:
 	sf::Text hud;
 	sf::Font theFont;
 
+	aPOINT* enemiesNextSteps;
+	time_t previous_shot;
+	time_t current_shot;
+
+	bool* monstersCollide;
+	bool mouseButtonPressed;
+
 	int enemiesAlive;
-	float secureZone = 250, angle, spriteSizeX, spriteSizeY;
+	float secureZone = 399, angle, spriteSizeX, spriteSizeY;
 
 	int i, j, a, b, c, d, windowX, windowY, mapX, mapY, ammoNumber, enemiesNumber;
 	int mapXstart=0, mapYstart=0, ammoNumberStart=0, enemiesNumberStart=0;
@@ -47,13 +55,6 @@ private:
 	void setEnemiesNumber(int enemiesN);
 	void setEnemiesRandomSpeed();
 	void setMonsterRandomPosition();
-
-	bool mouseButtonPressed;
-	time_t previous_shot;
-	time_t current_shot;
-
-	POINT* enemiesNextSteps;
-	bool* monstersCollide;
 
 public:
 	Engine(int widthWindow = 0, int heightWindow = 0, int mapWidth = 0, int mapHeight = 0, int ammoN = 0, int enemiesN = 0);

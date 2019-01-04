@@ -10,33 +10,36 @@ class Bullet :
 	public Object
 {
 private:
+	sf::Sprite mSprite;
 	sf::Texture mTexture;
-	int speed = 3;
+
+	aPOINT Position;
+	aPOINT relatPosition;
+	aPOINT reticlePosition;
+	aPOINT playerPosition;
+	aPOINT playerRelatPosition;
+	std::vector<float> vSpeed{ 0,0 };
+	std::vector<float> mapSize{ 0,0 };
+	std::vector<float> direction{ 0,0 };
+
+	float speed = 150.0;
 	float theAngle = 0;
 	bool shot;
 	
 	Player* thePlayer;
 	Map* theMap;
 	Reticle* theReticle;
-	POINT reticlePosition;
-	POINT playerPosition;
-	POINT playerRelatPosition;
-	std::vector<float> vSpeed{0,0};
-
 
 public:
 	Bullet();
 	~Bullet();
 
-	POINT Position;
-	POINT relatPosition;
-	sf::Sprite mSprite;
+	sf::Sprite* getSprite();
 
-	POINT* getPosition();
-	POINT* getRelatPosition();
-	std::vector<float> mapSize{ 0,0 };
-	sf::Sprite getSprite();
-	int* getSpeed();
+	aPOINT* getPosition();
+	aPOINT* getRelatPosition();
+
+	float* getSpeed();
 	bool* isShot();
 
 	void setPosition(float x, float y);
@@ -48,6 +51,7 @@ public:
 	void setMap(Map* aMap);
 	void setReticle(Reticle* aReticle);
 	void shoot();
+	void setMapSize(std::vector<float> aMapSize);
 
 	void update(float elapsedTime);
 };

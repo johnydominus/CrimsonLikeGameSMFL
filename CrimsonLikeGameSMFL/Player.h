@@ -6,14 +6,20 @@ class Player :
 	public Object
 {
 private:
-	std::vector<float> mapSize{0,0};
+	sf::Sprite mSprite;
 	sf::Texture mTexture;
 
-	float speed = 1.0;
-	bool alive;
+	aPOINT Position;
+	aPOINT relatPosition;
+	aPOINT prevPosition;
+	aRECT shape;
 
-	POINT prevPosition;
+	std::vector<float> size{ 25,25 };
+	std::vector<float> mapSize{ 0,0 };
 	std::vector<float> relatMovement{ 0,0 };
+
+	float speed = 120.0;
+	bool alive;
 
 	bool leftPressed;
 	bool rightPressed;
@@ -24,16 +30,16 @@ public:
 	Player();
 	~Player();
 
-	POINT Position;
-	POINT relatPosition;
-	sf::Sprite mSprite;
-	std::vector<float> size{ 25,15 };
-	RECT shape;
+	sf::Sprite* getSprite();
+	sf::Texture* getTexture();
 
-	POINT* getPosition();
-	POINT* getRelatPosition();
+	aPOINT* getPosition();
+	aPOINT* getRelatPosition();
+	aPOINT* getPrevPosition();
+	aRECT* getShape();
+	std::vector<float>* getRelatMovement();
 	std::vector<float>* getSize();
-	sf::Sprite getSprite();
+
 	float* getSpeed();
 	bool* isAlive();
 
@@ -43,8 +49,6 @@ public:
 	void setSpeed(float x);
 	void setAlive(bool x);
 	void setMapSize(float x, float y);
-
-	std::vector<float>* getRelatMovement();
 
 	void moveLeft();
 	void moveRight();

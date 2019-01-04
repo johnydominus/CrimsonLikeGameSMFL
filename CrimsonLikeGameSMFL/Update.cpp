@@ -4,15 +4,15 @@
 void Engine::update(float timeInSeconds) {
 	
 	std::stringstream theStringStream;
-	theStringStream << "Monsters:" << enemiesAlive << "     Ammo:" << ammoNumber << "     MapSize:" << mapX << "x" << mapY <<"    WindowSize:"<<windowX<<"x"<<windowY<<"\nPPos:" << thePlayer.getPosition()->x << "x" << thePlayer.getPosition()->y << "    MSpeed:" << *(allMonsters[0].getSpeed()) << "     PSpeed:" << *(thePlayer.getSpeed())<<"    MapRelPos:"<<theMap.relatPosition.x<<"x"<<theMap.relatPosition.y<<"    PRPos"<<thePlayer.relatPosition.x<<"x"<<thePlayer.relatPosition.y;
+	theStringStream << "Monsters:" << enemiesAlive << "     Ammo:" << ammoNumber << "     MapSize:" << mapX << "x" << mapY <<"    WindowSize:"<<windowX<<"x"<<windowY<<"    BPos:"<<(int)bullets[0].getPosition()->x<<"x"<< (int)bullets[0].getPosition()->y<<"\nPPos:" << (int)thePlayer.getPosition()->x << "x" << (int)thePlayer.getPosition()->y << "    MSpeed:" << *(allMonsters[0].getSpeed()) << "     PSpeed:" << *(thePlayer.getSpeed())<<"    MapRelPos:"<< (int)theMap.getRelatPosition()->x<<"x"<< (int)theMap.getRelatPosition()->y<<"    PRPos"<< (int)thePlayer.getRelatPosition()->x<<"x"<< (int)thePlayer.getRelatPosition()->y;
 	hud.setString(theStringStream.str());
 
-	if (thePlayer.isAlive()&&enemiesAlive) {
+	if (*thePlayer.isAlive()) {
 
 		thePlayer.update(timeInSeconds);
 		theMap.update();
 		theReticle.update();
-		ScreenToClient (mWindow.getSystemHandle() , &theReticle.relatPosition);
+		ScreenToClient (mWindow.getSystemHandle() , theReticle.getScreenPosition());
 
 		//Writing down, where each monster is going to go by it's next step
 		for (i = 0; i < enemiesNumber; i++) {
@@ -22,25 +22,30 @@ void Engine::update(float timeInSeconds) {
 		}
 
 		//cheking - does anybody is going to collide
-		/*for (i = 0; i < enemiesNumber; i++) {
+		
+		for (i = 0; i < enemiesNumber; i++) {
 			if (allMonsters[i].isAlive()) {
 				int j;
 				for (j = 0; j < enemiesNumber; j++) {
-					if (j == i)
-						continue;
-					else {
-						if ((((allMonsters[i].shape.left <= allMonsters[j].shape.right) && (allMonsters[i].shape.left >= allMonsters[j].shape.left)) || ((allMonsters[i].shape.right <= allMonsters[j].shape.right) && (allMonsters[i].shape.right >= allMonsters[j].shape.left))) && (((allMonsters[i].shape.bottom >= allMonsters[j].shape.top) && (allMonsters[i].shape.bottom <= allMonsters[j].shape.bottom)) || ((allMonsters[i].shape.top >= allMonsters[j].shape.top) && (allMonsters[i].shape.top <= allMonsters[j].shape.bottom)))) {
+					if (j != i)
+						if (sqrt(pow(allMonsters[i].getPosition()->x - allMonsters[j].getPosition()->x,2)+pow(allMonsters[i].getPosition()->y - allMonsters[j].getPosition()->y, 2))<=30.0) {
 							monstersCollide[i] = true;
 						}
-					}
+					
 				}
 			}
 		}
-		*/
+		
+
 		//updating each alive monster position without collisions
 		for (i = 0; i < enemiesNumber; i++) {
-			if (allMonsters[i].isAlive()/*&&!monstersCollide[i]*/) 
+			if (allMonsters[i].isAlive()/*&&!monstersCollide[i]*/) {
 				allMonsters[i].update(timeInSeconds, enemiesNextSteps[i]);
+				killPlayer(&allMonsters[i]);
+			}
+			else if (allMonsters[i].isAlive() && monstersCollide[i]) {
+				continue;
+			}
 		}
 
 		/********************************
@@ -49,7 +54,7 @@ void Engine::update(float timeInSeconds) {
 
 		//if button is not released - shoot
 		if (mouseButtonPressed == true) {
-			shoot(&bullets[ammoNumber-1]);
+			shoot(&(bullets[ammoNumber-1]));
 		}
 
 		//updating each shot bullet position
@@ -81,6 +86,7 @@ void Engine::update(float timeInSeconds) {
 		for (i = 0; i < enemiesNumber; i++) {
 			allMonsters[i].setAlive(true);
 		}
+		thePlayer.setPosition(mapX / 2, mapY / 2);
 		setMonsterRandomPosition();
 
 		for (i = 0; i < ammoNumber; i++)

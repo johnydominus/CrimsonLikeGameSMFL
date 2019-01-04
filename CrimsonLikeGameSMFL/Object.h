@@ -8,6 +8,20 @@
 #include "SFML/Graphics.hpp"
 #include <Windows.h> 
 
+struct aPOINT
+{
+	float x;
+	float y;
+};
+
+struct aRECT 
+{
+	float left;
+	float right;
+	float top;
+	float bottom;
+};
+
 class Object
 {
 private:
@@ -17,13 +31,13 @@ public:
 	Object();
 	~Object();
 
-	POINT Position;
-	POINT relatPosition;
+	aPOINT Position;
+	aPOINT relatPosition;
 	sf::Sprite mSprite;
 
-	virtual POINT* getPosition() = 0;
-	virtual POINT* getRelatPosition() = 0;
-	virtual sf::Sprite getSprite() = 0;
+	virtual aPOINT* getPosition() = 0;
+	virtual aPOINT* getRelatPosition() = 0;
+	virtual sf::Sprite* getSprite() = 0;
 
 	virtual void setRelativePosition(float x, float y) = 0;
 };

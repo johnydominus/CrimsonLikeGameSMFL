@@ -11,13 +11,13 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	setEnemiesNumber(enemiesN);
 
 	//setting map sprites
-	a = ((mapY+windowY) / theMap.mSprite.getTexture()->getSize().y) + 1;
-	b = ((mapX+windowX) / theMap.mSprite.getTexture()->getSize().x) + 1;
+	a = ((mapY+windowY) / theMap.getSprite()->getTexture()->getSize().y) + 1;
+	b = ((mapX+windowX) / theMap.getSprite()->getTexture()->getSize().x) + 1;
 	mapSprites = new sf::Sprite*[a];
 	for (i = 0; i < a; i++) {
 		mapSprites[i] = new sf::Sprite[b];
 		for (j = 0; j < b; j++) {
-			mapSprites[i][j].setTexture(*theMap.mSprite.getTexture());
+			mapSprites[i][j].setTexture(*theMap.getSprite()->getTexture());
 		}
 	}
 
@@ -60,7 +60,7 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 		enemiesNumberStart = enemiesN;
 
 	//creating data storage needed for monsters collision handling
-	enemiesNextSteps = new POINT[enemiesNumber];
+	enemiesNextSteps = new aPOINT[enemiesNumber];
 	monstersCollide = new bool[enemiesNumber];
 
 	//setting game objects
@@ -71,15 +71,13 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 
 	//map
 	int mapRelX, mapRelY;
-	mapRelX = thePlayer.relatPosition.x - (windowX / 2);
-	mapRelY = thePlayer.relatPosition.y - (windowY / 2);
+	mapRelX = thePlayer.getRelatPosition()->x - (windowX / 2);
+	mapRelY = thePlayer.getRelatPosition()->y - (windowY / 2);
 
 	theMap.setRelativePosition(mapRelX, mapRelY);
 	theMap.setSize(mapX, mapY);
 	theMap.setPlayer(&thePlayer);
 
-
-	
 	//reticle
 	theReticle.setPlayer(&thePlayer);
 
@@ -101,7 +99,8 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 		bullets[i].setPlayer(&thePlayer);
 		bullets[i].setReticle(&theReticle);
 		bullets[i].setMap(&theMap);
-		bullets[i].mapSize = *(theMap.getSize());
+		bullets[i].setMapSize(*theMap.getSize());
+		bullets[i].setPosition(thePlayer.getPosition()->x,thePlayer.getPosition()->y);
 	}
 }	
 
@@ -132,16 +131,16 @@ void Engine::start()
 
 void Engine::killMonster(Monster* aMonster, Bullet* aBullet)
 {
-	if (((aBullet->Position.x >= aMonster->shape.left) && (aBullet->Position.x <= aMonster->shape.right)) && ((aBullet->Position.y >= aMonster->shape.bottom) && (aBullet->Position.y <= aMonster->shape.top))) {
-		aMonster->setAlive(false);
-		aBullet->setShot(false);
-		enemiesAlive--;
-	}
+	//if (((aBullet->getPosition()->x >= aMonster->getShape()->left) && (aBullet->getPosition()->x <= aMonster->getShape()->right)) && ((aBullet->getPosition()->y >= aMonster->getShape()->bottom) && (aBullet->getPosition()->y <= aMonster->getShape()->top))) {
+	//	aMonster->setAlive(false);
+	//	aBullet->setShot(false);
+	//	enemiesAlive--;
+	//}
 }
 
 void Engine::killPlayer(Monster *aMonster)
 {
-	if ((((thePlayer.shape.left <= aMonster->shape.right) && (thePlayer.shape.left >= aMonster->shape.left)) || ((thePlayer.shape.right <= aMonster->shape.right) && (thePlayer.shape.right >= aMonster->shape.left))) && (((thePlayer.shape.bottom <= aMonster->shape.top) && (thePlayer.shape.bottom >= aMonster->shape.bottom)) || ((thePlayer.shape.top <= aMonster->shape.top) && (thePlayer.shape.top >= aMonster->shape.bottom)))) {
+	if (sqrt(pow(thePlayer.getPosition()->x - aMonster->getPosition()->x, 2) + pow(thePlayer.getPosition()->y - aMonster->getPosition()->y, 2)) < 27.5) {
 		thePlayer.setAlive(false);
 	}
 }
@@ -388,9 +387,9 @@ void Engine::setEnemiesNumber(int enemiesN)
 
 void Engine::setEnemiesRandomSpeed() {
 	srand(time(NULL));
-	int randomEnemiesSpeed = (rand() % 10) + 1;
+	int randomEnemiesSpeed = (rand() % 7) + 1;
 	for (i = 0; i < enemiesNumber; i++)
-		allMonsters[i].setSpeed(randomEnemiesSpeed);
+		allMonsters[i].setSpeed((float)randomEnemiesSpeed);
 }
 
 void Engine::setMonsterRandomPosition() {
@@ -404,28 +403,28 @@ void Engine::setMonsterRandomPosition() {
 		spawnCollide = false;
 		std::vector<float> monsterSize;
 		monsterSize = *(allMonsters[i].getSize());
-		allMonsters[i].Position.x = rand() % (int)(mapSize[0]-secureZone);
-		allMonsters[i].Position.y = rand() % (int)(mapSize[1]-secureZone);
+		allMonsters[i].getPosition()->x = rand() % (int)(mapSize[0]-secureZone);
+		allMonsters[i].getPosition()->y = rand() % (int)(mapSize[1]-secureZone);
 
-		allMonsters[i].shape.left = allMonsters[i].Position.x - (monsterSize[0] / 2);
-		allMonsters[i].shape.right = allMonsters[i].Position.x + (monsterSize[0] / 2);
-		allMonsters[i].shape.top = allMonsters[i].Position.y - (monsterSize[1] / 2);
-		allMonsters[i].shape.bottom = allMonsters[i].Position.y + (monsterSize[1] / 2);
+		allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
+		allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
+		allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
+		allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
 
 		for (j = i; j >= 0; j--) {
 			do {
 				if (j != i) {
-					if((((allMonsters[i].shape.left <= allMonsters[j].shape.right) && (allMonsters[i].shape.left >= allMonsters[j].shape.left)) || ((allMonsters[i].shape.right <= allMonsters[j].shape.right) && (allMonsters[i].shape.right >= allMonsters[j].shape.left))) && (((allMonsters[i].shape.bottom <= allMonsters[j].shape.top) && (allMonsters[i].shape.bottom >= allMonsters[j].shape.top)) || ((allMonsters[i].shape.bottom <= allMonsters[j].shape.top) && (allMonsters[i].shape.bottom >= allMonsters[j].shape.bottom))))
+					if((((allMonsters[i].getShape()->left <= allMonsters[j].getShape()->right) && (allMonsters[i].getShape()->left >= allMonsters[j].getShape()->left)) || ((allMonsters[i].getShape()->right <= allMonsters[j].getShape()->right) && (allMonsters[i].getShape()->right >= allMonsters[j].getShape()->left))) && (((allMonsters[i].getShape()->bottom <= allMonsters[j].getShape()->top) && (allMonsters[i].getShape()->bottom >= allMonsters[j].getShape()->top)) || ((allMonsters[i].getShape()->bottom <= allMonsters[j].getShape()->top) && (allMonsters[i].getShape()->bottom >= allMonsters[j].getShape()->bottom))))
 					spawnCollide = true;			
 				}
 				if (spawnCollide == true) {
-					allMonsters[i].Position.x = rand() % (int)(mapSize[0] - secureZone);
-					allMonsters[i].Position.y = rand() % (int)(mapSize[1] - secureZone);
+					allMonsters[i].getPosition()->x = rand() % (int)(mapSize[0] - secureZone);
+					allMonsters[i].getPosition()->y = rand() % (int)(mapSize[1] - secureZone);
 
-					allMonsters[i].shape.left = allMonsters[i].Position.x - (monsterSize[0] / 2);
-					allMonsters[i].shape.right = allMonsters[i].Position.x + (monsterSize[0] / 2);
-					allMonsters[i].shape.top = allMonsters[i].Position.y - (monsterSize[1] / 2);
-					allMonsters[i].shape.bottom = allMonsters[i].Position.y + (monsterSize[1] / 2);
+					allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
+					allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
+					allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
+					allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
 
 					spawnCollide = false;
 				}
