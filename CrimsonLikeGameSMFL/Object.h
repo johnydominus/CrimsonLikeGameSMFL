@@ -22,6 +22,12 @@ struct aRECT
 	float bottom;
 };
 
+struct SCORE
+{
+	int player;
+	int monsters;
+};
+
 class Object
 {
 private:

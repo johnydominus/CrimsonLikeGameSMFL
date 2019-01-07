@@ -165,4 +165,3 @@ void Player::update(float elapsedTime)
 	shape.top = Position.y - (size[1] / 2.0);
 	shape.bottom = Position.y + (size[1] / 2.0);
 }
-

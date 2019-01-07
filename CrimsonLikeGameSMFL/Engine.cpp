@@ -4,6 +4,7 @@
 
 Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, int ammoN, int enemiesN)
 {
+	srand(time(NULL));
 	//setting game values
 	setWindowSize(widthWindow, heightWindow);
 	setMapSize(mapWidth, mapHeight);
@@ -39,7 +40,7 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	}
 
 	//setting HUD text
-	theFont.loadFromFile("img/MajorMonoDisplayRegular.ttf");
+	theFont.loadFromFile("img/RobotoBlack.ttf");
 	hud.setFont(theFont);
 	hud.setCharacterSize(12);
 	hud.setFillColor(sf::Color::Black);
@@ -48,16 +49,10 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	mWindow.create(sf::VideoMode(windowX, windowY), "CrimsonLikeGame", sf::Style::Default);
 
 	//record start game values, we'll use this parameters for restarting the game, when player dies
-	if (mapWidth&&mapHeight) {
-		mapXstart = mapWidth;
-		mapYstart = mapHeight;
-	}
-
-	if (ammoN)
-		ammoNumberStart = ammoN;
-
-	if (enemiesN)
-		enemiesNumberStart = enemiesN;
+	mapXstart = mapX;
+	mapYstart = mapY;
+	ammoNumberStart = ammoNumber;
+	enemiesNumberStart = enemiesNumber;
 
 	//creating data storage needed for monsters collision handling
 	enemiesNextSteps = new aPOINT[enemiesNumber];
@@ -77,6 +72,7 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	theMap.setRelativePosition(mapRelX, mapRelY);
 	theMap.setSize(mapX, mapY);
 	theMap.setPlayer(&thePlayer);
+	theMap.fillTheGrid(mapWidth, mapHeight);
 
 	//reticle
 	theReticle.setPlayer(&thePlayer);
@@ -115,7 +111,7 @@ Engine::~Engine()
 
 void Engine::start()
 {
-	time(&previous_shot);
+	previous_shot = Clock::now();
 	sf::Clock clock;
 
 	//game loop
@@ -129,13 +125,24 @@ void Engine::start()
 	}
 }
 
+void Engine::shoot(Bullet* aBullet)
+{
+	current_shot = Clock::now();
+	ms = std::chrono::duration_cast<milliseconds>(current_shot - previous_shot);
+	if (ms.count() > 100) {
+		aBullet->shoot();
+		previous_shot = current_shot;
+		//ammoNumber--;
+	}
+}
+
 void Engine::killMonster(Monster* aMonster, Bullet* aBullet)
 {
-	//if (((aBullet->getPosition()->x >= aMonster->getShape()->left) && (aBullet->getPosition()->x <= aMonster->getShape()->right)) && ((aBullet->getPosition()->y >= aMonster->getShape()->bottom) && (aBullet->getPosition()->y <= aMonster->getShape()->top))) {
-	//	aMonster->setAlive(false);
-	//	aBullet->setShot(false);
-	//	enemiesAlive--;
-	//}
+	if (sqrt(pow(aBullet->getPosition()->x - aMonster->getPosition()->x, 2) + pow(aBullet->getPosition()->y - aMonster->getPosition()->y,2 ))< 15.0) {
+		aMonster->setAlive(false);
+		aBullet->setShot(false);
+		enemiesAlive--;
+	}
 }
 
 void Engine::killPlayer(Monster *aMonster)
@@ -143,21 +150,6 @@ void Engine::killPlayer(Monster *aMonster)
 	if (sqrt(pow(thePlayer.getPosition()->x - aMonster->getPosition()->x, 2) + pow(thePlayer.getPosition()->y - aMonster->getPosition()->y, 2)) < 27.5) {
 		thePlayer.setAlive(false);
 	}
-}
-
-void Engine::shoot(Bullet* aBullet)
-{
-	time(&current_shot);
-	if (difftime(current_shot, previous_shot) > 0.1) {
-		aBullet->shoot();
-		previous_shot = current_shot;
-		ammoNumber--;
-	}
-}
-
-Bullet * Engine::getBullet(int i)
-{
-	return &bullets[i];
 }
 
 void Engine::setWindowSize(int widthWindow, int heightWindow){
@@ -168,7 +160,6 @@ void Engine::setWindowSize(int widthWindow, int heightWindow){
 	}
 	else
 	{
-		srand(time(NULL));
 		i = rand() % 11;
 
 		switch (i)
@@ -242,7 +233,6 @@ void Engine::setMapSize(float mapWidth, float mapHeight)
 	}
 	else
 	{
-		srand(time(NULL));
 		i = rand() % 22;
 
 		switch (i)
@@ -369,7 +359,6 @@ void Engine::setAmmoNumber(int ammoN)
 		ammoNumber = ammoN;
 	}
 	else {
-		srand(time(NULL));
 		ammoNumber = (rand() % 30) + 1;
 	}
 }
@@ -380,21 +369,17 @@ void Engine::setEnemiesNumber(int enemiesN)
 		enemiesNumber = enemiesN;
 	}
 	else {
-		srand(time(NULL));
 		enemiesNumber = (rand() % 30) + 1;
 	}
 }
 
 void Engine::setEnemiesRandomSpeed() {
-	srand(time(NULL));
 	int randomEnemiesSpeed = (rand() % 7) + 1;
 	for (i = 0; i < enemiesNumber; i++)
 		allMonsters[i].setSpeed((float)randomEnemiesSpeed);
 }
 
 void Engine::setMonsterRandomPosition() {
-	
-	srand(time(NULL));
 	
 	std::vector<float> mapSize = *(theMap.getSize());
 	bool spawnCollide;
@@ -403,13 +388,21 @@ void Engine::setMonsterRandomPosition() {
 		spawnCollide = false;
 		std::vector<float> monsterSize;
 		monsterSize = *(allMonsters[i].getSize());
-		allMonsters[i].getPosition()->x = rand() % (int)(mapSize[0]-secureZone);
-		allMonsters[i].getPosition()->y = rand() % (int)(mapSize[1]-secureZone);
 
-		allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
-		allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
-		allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
-		allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
+		allMonsters[i].getPosition()->x = rand() % (int)(mapSize[0]-secureZone);
+		allMonsters[i].getPosition()->y = rand() % (int)(mapSize[1] - secureZone);
+
+		if ((allMonsters[i].getPosition()->x > ((mapSize[0] / 2) - (secureZone / 2)) && (allMonsters[i].getPosition()->x < ((mapSize[0] / 2) + (secureZone / 2)))) && (allMonsters[i].getPosition()->y > ((mapSize[1] / 2) - (secureZone / 2)) && (allMonsters[i].getPosition()->y < ((mapSize[1] / 2) + (secureZone / 2))))) {
+			if(rand()%2+1)
+				allMonsters[i].getPosition()->x +=secureZone;
+			else
+				allMonsters[i].getPosition()->y += secureZone;
+		}
+
+		//allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
+		//allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
+		//allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
+		//allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
 
 		for (j = i; j >= 0; j--) {
 			do {
@@ -421,10 +414,17 @@ void Engine::setMonsterRandomPosition() {
 					allMonsters[i].getPosition()->x = rand() % (int)(mapSize[0] - secureZone);
 					allMonsters[i].getPosition()->y = rand() % (int)(mapSize[1] - secureZone);
 
-					allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
-					allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
-					allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
-					allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
+					if ((allMonsters[i].getPosition()->x > ((mapSize[0] / 2) - (secureZone / 2)) && (allMonsters[i].getPosition()->x < ((mapSize[0] / 2) + (secureZone / 2)))) && (allMonsters[i].getPosition()->y > ((mapSize[1] / 2) - (secureZone / 2)) && (allMonsters[i].getPosition()->y < ((mapSize[1] / 2) + (secureZone / 2))))) {
+						if (rand() % 2 + 1)
+							allMonsters[i].getPosition()->x += secureZone;
+						else
+							allMonsters[i].getPosition()->y += secureZone;
+					}
+
+					//allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
+					//allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
+					//allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
+					//allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
 
 					spawnCollide = false;
 				}

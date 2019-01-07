@@ -67,14 +67,11 @@ void Reticle::update()
 {
 	GetCursorPos(&screenPosition);
 
-	playerRelatPosition = *(thePlayer->getRelatPosition());
-	playerPosition = *(thePlayer->getPosition());
+	Position.x = thePlayer->getPosition()->x + (screenPosition.x - thePlayer->getRelatPosition()->x);
+	Position.y = thePlayer->getPosition()->y + (screenPosition.y - thePlayer->getRelatPosition()->y);
 
-	Position.x = playerPosition.x + (screenPosition.x - playerRelatPosition.x);
-	Position.y = playerPosition.y + (screenPosition.y - playerRelatPosition.y);
-
-	direction[0] = Position.x - thePlayer->getPosition()->x;
-	direction[1] = Position.y - thePlayer->getPosition()->y;
+	direction[0] = screenPosition.x - thePlayer->getRelatPosition()->x;
+	direction[1] = screenPosition.y - thePlayer->getRelatPosition()->y;
 
 	pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
 

@@ -60,6 +60,7 @@ void Bullet::setSpeed(float x)
 void Bullet::setShot(bool x)
 {
 	shot = x;
+
 }
 
 void Bullet::setPlayer(Player * aPlayer)
@@ -79,26 +80,21 @@ void Bullet::setReticle(Reticle * aReticle)
 
 void Bullet::shoot()
 {
-	/*
-	reticlePosition = *(theReticle->getPosition());
-	Position = *(thePlayer->getPosition());
+	//direction = *(theReticle->getDirection());
 
-	direction[0] = reticlePosition.x - Position.x;
-	direction[1] = reticlePosition.y - Position.y;
+	direction[0] = theReticle->getScreenPosition()->x - relatPosition.x;
+	direction[1] = theReticle->getScreenPosition()->y - relatPosition.y;
 
 	pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
+
 	direction[0] /= pathLength;
 	direction[1] /= pathLength;
-	*/
-	
-	direction = *(theReticle->getDirection());
 
 	vSpeed[0] = direction[0] * speed;
 	vSpeed[1] = direction[1] * speed;
 
-	theAngle = atan2(theReticle->getScreenPosition()->x - relatPosition.x, theReticle->getScreenPosition()->y - relatPosition.y) * 180.0 / 3.141592;
+	theAngle = -(atan2(theReticle->getScreenPosition()->x - relatPosition.x, theReticle->getScreenPosition()->y - relatPosition.y) * 180.0 / 3.141592);
 	mSprite.setRotation(theAngle);
-
 	setShot(true);
 }
 
@@ -109,15 +105,14 @@ void Bullet::setMapSize(std::vector<float> aMapSize)
 
 void Bullet::update(float elapsedTime)
 {
+
 	if (shot) {
+
+		relatPosition.x = thePlayer->getRelatPosition()->x + (Position.x - thePlayer->getPosition()->x);
+		relatPosition.y = thePlayer->getRelatPosition()->y + (Position.y - thePlayer->getPosition()->y);
+
 		Position.x += vSpeed[0] * elapsedTime;
 		Position.y += vSpeed[1] * elapsedTime;
-
-		playerPosition = *(thePlayer->getPosition());
-		playerRelatPosition = *(thePlayer->getRelatPosition());
-
-		relatPosition.x = playerRelatPosition.x + (Position.x - playerPosition.x);
-		relatPosition.y = playerRelatPosition.y + (Position.y - playerPosition.y);
 
 		if (Position.x < 0 || Position.x > mapSize[0] || Position.y < 0 || Position.y > mapSize[1]) {
 			shot = false;

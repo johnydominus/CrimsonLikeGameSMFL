@@ -22,8 +22,9 @@ private:
 	std::vector<float> mapSize{ 0,0 };
 	std::vector<float> direction{ 0,0 };
 
-	float speed = 150.0;
+	float speed = 500.0;
 	float theAngle = 0;
+	float pathLength;
 	bool shot;
 	
 	Player* thePlayer;

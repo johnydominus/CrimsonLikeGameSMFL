@@ -8,6 +8,8 @@ Monster::Monster()
 	mSprite.setTexture(mTexture);
 	mSprite.setOrigin(mSprite.getTexture()->getSize().x*0.5, mSprite.getTexture()->getSize().y*0.5); 
 	alive = true;
+	collide = false;
+	time(&since_collide);
 }
 
 
@@ -35,6 +37,10 @@ std::vector<float>* Monster::getSize()
 	return &size;
 }
 
+std::vector<float>* Monster::getDirection() {
+	return &direction;
+}
+
 sf::Sprite* Monster::getSprite()
 {
 	return &mSprite;
@@ -45,9 +51,17 @@ float * Monster::getSpeed()
 	return &speed;
 }
 
+time_t* Monster::getSinceCollide() {
+	return &since_collide;
+}
+
 bool * Monster::isAlive()
 {
 	return &alive;
+}
+
+void Monster::setCollide(bool collision) {
+	collide = collision;
 }
 
 void Monster::setPosition(aPOINT newPosition)
@@ -86,7 +100,35 @@ void Monster::setMap(Map * aMap)
 {
 	theMap = aMap;
 }
+/*
+void Monster::occupyNode() {
+	theMap->mGrid[(int)(shape.top / 30)][(int)(shape.left / 30)].occupied = true;
 
+	if ((shape.right / 30) <= theMap->gridX) {
+		theMap->mGrid[(int)shape.top / 30][(int)(shape.right / 30)].occupied = true;
+	}
+	if ((shape.bottom / 30) <= theMap->gridY) {
+		theMap->mGrid[(int)shape.bottom / 30][(int)(shape.left / 30)].occupied = true;
+		if ((shape.right / 30) <= theMap->gridX) {
+			theMap->mGrid[(int)shape.bottom / 30][(int)(shape.right / 30)].occupied = true;
+		}
+	}
+}
+
+void Monster::occupyNextNode() {
+	theMap->mGrid[(int)(nextShape.top / 30)][(int)(nextShape.left / 30)].occupied = true;
+
+	if ((shape.right / 30) <= theMap->gridX) {
+		theMap->mGrid[(int)nextShape.top / 30][(int)(nextShape.right / 30)].occupied = true;
+	}
+	if ((shape.bottom / 30) <= theMap->gridY) {
+		theMap->mGrid[(int)nextShape.bottom / 30][(int)(nextShape.left / 30)].occupied = true;
+		if ((shape.right / 30) <= theMap->gridX) {
+			theMap->mGrid[(int)nextShape.bottom / 30][(int)(nextShape.right / 30)].occupied = true;
+		}
+	}
+}
+*/
 aPOINT Monster::checkUpdate(float elapsedTime)
 {
 	nextStep = Position;
@@ -106,21 +148,30 @@ aPOINT Monster::checkUpdate(float elapsedTime)
 	nextStep.x += vSpeed[0];
 	nextStep.y += vSpeed[1];
 
+	nextShape.left = nextStep.x - (size[0] / 2);
+	nextShape.right = nextStep.x + (size[0] / 2);
+	nextShape.top = nextStep.y - (size[1] / 2);
+	nextShape.bottom = nextStep.y + (size[1] / 2);
+
+	//occupyNextNode();
+
 	return nextStep;
 }
 
 void Monster::update(float elapsedTime, aPOINT aNextStep)
 {
-	Position = aNextStep;
+	if (alive) {
+	//	if (collide==false) {
+			Position = aNextStep;
 
-	playerPosition = *(thePlayer->getPosition());
-	playerRelatPosition = *(thePlayer->getRelatPosition());
+			relatPosition.x = thePlayer->getRelatPosition()->x + (Position.x - thePlayer->getPosition()->x);
+			relatPosition.y = thePlayer->getRelatPosition()->y + (Position.y - thePlayer->getPosition()->y);
 
-	relatPosition.x = playerRelatPosition.x + (Position.x - playerPosition.x);
-	relatPosition.y = playerRelatPosition.y + (Position.y - playerPosition.y);
+			shape.left = Position.x - (size[0] / 2);
+			shape.right = Position.x + (size[0] / 2);
+			shape.top = Position.y - (size[1] / 2);
+			shape.bottom = Position.y + (size[1] / 2);
 
-	shape.left = Position.x - (size[0] / 2);
-	shape.right = Position.x + (size[0] / 2);
-	shape.top = Position.y - (size[1] / 2);
-	shape.bottom = Position.y + (size[1] / 2);
+			//occupyNode();
+	}
 }

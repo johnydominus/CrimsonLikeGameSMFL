@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Map.h"
 
-
 Map::Map()
 {
 	mTexture.loadFromFile("img/background.jpg");
@@ -27,6 +26,37 @@ aPOINT* Map::getRelatPosition()
 std::vector<float>* Map::getSize()
 {
 	return &size;
+}
+
+void Map::fillTheGrid(int mapWidth, int mapHeigth)
+{
+	gridX = (mapWidth / 30) + 1;
+	if (mapWidth % 30 >= 15) {
+		gridX++;
+	}
+	gridY = (mapHeigth / 30) + 1;
+	if (mapHeigth % 30 >= 15) {
+		gridX++;
+	}
+
+	mGrid = new Node*[gridY];
+	for (i = 0; i < gridX; i++) {
+		mGrid[i] = new Node[gridX];
+	}
+
+	nextGrid = new Node*[gridY];
+	for (i = 0; i < gridX; i++) {
+		nextGrid[i] = new Node[gridX];
+	}
+	for (i = 0; i < gridY; i++) {
+		for (j = 0; j < gridX; j++) {
+			mGrid[i][j].centerPosition.x = (j * 30) + 15;
+			mGrid[i][j].centerPosition.y = (i * 30) + 15;
+
+			nextGrid[i][j].centerPosition.x = (j * 30) + 15;
+			nextGrid[i][j].centerPosition.y = (i * 30) + 15;
+		}
+	}
 }
 
 sf::Sprite* Map::getSprite()

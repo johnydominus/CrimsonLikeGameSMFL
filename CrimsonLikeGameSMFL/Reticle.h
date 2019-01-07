@@ -13,8 +13,6 @@ private:
 	POINT screenPosition;
 	aPOINT relatPosition;
 	aPOINT Position;
-	aPOINT playerPosition;
-	aPOINT playerRelatPosition;
 	std::vector<float> direction{ 0,0 };
 	
 	float pathLength;

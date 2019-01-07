@@ -57,18 +57,20 @@ void Engine::draw() {
 	
 	//preparing monsters draw
 	for (i = 0; i < enemiesNumber; i++) {
-		angle = -(atan2(thePlayer.getRelatPosition()->x - allMonsters[i].getRelatPosition()->x, thePlayer.getRelatPosition()->y - allMonsters[i].getRelatPosition()->y) * 180.0 / 3.141592);
-		allMonsters[i].getSprite()->setPosition(allMonsters[i].getRelatPosition()->x, allMonsters[i].getRelatPosition()->y);
-		allMonsters[i].getSprite()->setRotation(angle);
-		mWindow.draw(*allMonsters[i].getSprite());
+		if (*allMonsters[i].isAlive()) {
+			angle = -(atan2(thePlayer.getRelatPosition()->x - allMonsters[i].getRelatPosition()->x, thePlayer.getRelatPosition()->y - allMonsters[i].getRelatPosition()->y) * 180.0 / 3.141592);
+			allMonsters[i].getSprite()->setPosition(allMonsters[i].getRelatPosition()->x, allMonsters[i].getRelatPosition()->y);
+			allMonsters[i].getSprite()->setRotation(angle);
+			mWindow.draw(*allMonsters[i].getSprite());
+		}
 	}
 
 	//preparing bullets draw
 	for (i = 0; i < ammoNumber; i++) {
-		if (bullets[i].isShot()) {
+		//if (*bullets[i].isShot()) {
 			bullets[i].getSprite()->setPosition(bullets[i].getRelatPosition()->x, bullets[i].getRelatPosition()->y);
 			mWindow.draw(*bullets[i].getSprite());
-		}
+		//}
 	}
 
 	//preparing hud draw

@@ -6,6 +6,7 @@
 #include "Monster.h"
 #include "Bullet.h"
 #include <ctime>
+#include <chrono>
 #include <sstream>
 #include "SFML/Graphics.hpp"
 
@@ -28,8 +29,13 @@ private:
 	sf::Font theFont;
 
 	aPOINT* enemiesNextSteps;
-	time_t previous_shot;
-	time_t current_shot;
+	SCORE score{0,0};
+	
+	typedef std::chrono::high_resolution_clock Clock;
+	typedef std::chrono::milliseconds milliseconds;
+	Clock::time_point previous_shot;
+	Clock::time_point current_shot;
+	milliseconds ms;
 
 	bool* monstersCollide;
 	bool mouseButtonPressed;

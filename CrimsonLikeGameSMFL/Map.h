@@ -1,6 +1,11 @@
 #pragma once
 #include "Player.h"
 
+struct Node {
+	bool occupied;
+	aPOINT centerPosition;
+};
+
 class Map:
 	public Object
 {
@@ -16,10 +21,18 @@ private:
 
 	Player* thePlayer;
 
+	int i, j;
+
 public:
 	Map();
 	~Map();
 
+	Node** mGrid;
+	Node** nextGrid;
+
+	void fillTheGrid(int mapWidth, int mapHeigth);
+	int gridX, gridY;
+	
 	sf::Sprite* getSprite();
 	aPOINT* getPosition();
 	aPOINT* getRelatPosition();
