@@ -67,10 +67,10 @@ void Engine::draw() {
 
 	//preparing bullets draw
 	for (i = 0; i < ammoNumberStart; i++) {
-		//if (*thePlayer.bullets[i].isShot()) {
+		if (*thePlayer.bullets[i].isShot()) {
 			thePlayer.bullets[i].getSprite()->setPosition(thePlayer.bullets[i].getRelatPosition()->x, thePlayer.bullets[i].getRelatPosition()->y);
 			mWindow.draw(*thePlayer.bullets[i].getSprite());
-		//}
+		}
 	}
 
 	//preparing hud draw
