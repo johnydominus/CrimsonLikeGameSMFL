@@ -1,6 +1,9 @@
 #pragma once
 #include "Object.h"
+#include "Bullet.h"
 #include <Windows.h>
+#include <ctime>
+#include <chrono>
 
 class Player :
 	public Object
@@ -20,6 +23,7 @@ private:
 
 	float speed = 120.0;
 	bool alive;
+	int i, j;
 
 	bool leftPressed;
 	bool rightPressed;
@@ -37,11 +41,25 @@ public:
 	aPOINT* getRelatPosition();
 	aPOINT* getPrevPosition();
 	aRECT* getShape();
+
+	Bullet* bullets;
+
+	typedef std::chrono::high_resolution_clock Clock;
+	typedef std::chrono::milliseconds milliseconds;
+	Clock::time_point previous_shot;
+	Clock::time_point current_shot;
+	milliseconds ms;
+
 	std::vector<float>* getRelatMovement();
 	std::vector<float>* getSize();
 
+	int ammoNumber, bulletNumber, bulletMax;
+	bool mouseButtonPressed;
+	bool wasFire;
+
 	float* getSpeed();
 	bool* isAlive();
+
 
 	void setPosition(float x, float y);
 	void setRelativePosition(float x, float y);
@@ -50,6 +68,9 @@ public:
 	void setAlive(bool x);
 	void setMapSize(float x, float y);
 
+	void shoot();
+	void fire();
+	void stopFire();
 	void moveLeft();
 	void moveRight();
 	void moveUp();

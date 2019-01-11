@@ -11,6 +11,12 @@ Map::Map()
 
 Map::~Map()
 {
+	for (i = 0; i < gridX; i++) {
+		delete mGrid[i];
+		delete nextGrid[i];
+	}
+	delete mGrid;
+	delete nextGrid;
 }
 
 aPOINT* Map::getPosition()
@@ -36,18 +42,16 @@ void Map::fillTheGrid(int mapWidth, int mapHeigth)
 	}
 	gridY = (mapHeigth / 30) + 1;
 	if (mapHeigth % 30 >= 15) {
-		gridX++;
+		gridY++;
 	}
 
 	mGrid = new Node*[gridY];
-	for (i = 0; i < gridX; i++) {
-		mGrid[i] = new Node[gridX];
-	}
-
 	nextGrid = new Node*[gridY];
-	for (i = 0; i < gridX; i++) {
+	for (i = 0; i < gridY; i++) {
+		mGrid[i] = new Node[gridX];
 		nextGrid[i] = new Node[gridX];
 	}
+
 	for (i = 0; i < gridY; i++) {
 		for (j = 0; j < gridX; j++) {
 			mGrid[i][j].centerPosition.x = (j * 30) + 15;
@@ -92,4 +96,11 @@ void Map::update()
 	relatMovement = *(thePlayer->getRelatMovement());
 	relatPosition.x -= (float)relatMovement[0];
 	relatPosition.y -= (float)relatMovement[1];
+
+	for (i = 0; i < gridY; i++) {
+		for (j = 0; j < gridX; j++) {
+			mGrid[i][j].occupied = false;
+			nextGrid[i][j].occupied = false;
+		}
+	}
 }

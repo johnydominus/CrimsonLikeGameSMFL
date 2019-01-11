@@ -1,6 +1,5 @@
 #pragma once
 #include "Object.h"
-#include "Player.h"
 #include <Windows.h>
 
 class Reticle :
@@ -17,8 +16,6 @@ private:
 	
 	float pathLength;
 
-	Player* thePlayer;
-
 public:
 	Reticle();
 	~Reticle();
@@ -33,7 +30,6 @@ public:
 	void setPosition(float x, float y);
 	void setRelativePosition(float x, float y);
 	void setScreenPosition(float x, float y);
-	void setPlayer(Player* aPlayer);
 
-	void update();
+	void update(aPOINT* playerPosition, aPOINT* playerRelPosition);
 };

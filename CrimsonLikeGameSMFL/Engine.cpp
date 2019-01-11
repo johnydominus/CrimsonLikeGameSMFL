@@ -51,7 +51,7 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	//record start game values, we'll use this parameters for restarting the game, when player dies
 	mapXstart = mapX;
 	mapYstart = mapY;
-	ammoNumberStart = ammoNumber;
+	ammoNumberStart = thePlayer.ammoNumber;
 	enemiesNumberStart = enemiesNumber;
 
 	//creating data storage needed for monsters collision handling
@@ -63,6 +63,7 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	thePlayer.setPosition(mapX / 2, mapY / 2);
 	thePlayer.setRelativePosition(windowX / 2, windowY / 2);
 	thePlayer.setMapSize(mapX, mapY);
+	thePlayer.bulletMax = ammoNumberStart;
 
 	//map
 	int mapRelX, mapRelY;
@@ -72,10 +73,7 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	theMap.setRelativePosition(mapRelX, mapRelY);
 	theMap.setSize(mapX, mapY);
 	theMap.setPlayer(&thePlayer);
-	theMap.fillTheGrid(mapWidth, mapHeight);
-
-	//reticle
-	theReticle.setPlayer(&thePlayer);
+	theMap.fillTheGrid(mapX, mapY);
 
 	//monsters
 	allMonsters = new Monster[enemiesNumber];
@@ -89,14 +87,12 @@ Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, i
 	setEnemiesRandomSpeed();
 
 	//bullets
-	bullets = new Bullet[ammoNumber];
+	thePlayer.bullets = new Bullet[thePlayer.ammoNumber];
 
-	for (i = 0; i < ammoNumber; i++) {
-		bullets[i].setPlayer(&thePlayer);
-		bullets[i].setReticle(&theReticle);
-		bullets[i].setMap(&theMap);
-		bullets[i].setMapSize(*theMap.getSize());
-		bullets[i].setPosition(thePlayer.getPosition()->x,thePlayer.getPosition()->y);
+	for (i = 0; i < thePlayer.ammoNumber; i++) {
+		thePlayer.bullets[i].setReticle(&theReticle);
+		thePlayer.bullets[i].setMapSize(*theMap.getSize());
+		thePlayer.bullets[i].setPosition(thePlayer.getPosition()->x,thePlayer.getPosition()->y);
 	}
 }	
 
@@ -111,7 +107,6 @@ Engine::~Engine()
 
 void Engine::start()
 {
-	previous_shot = Clock::now();
 	sf::Clock clock;
 
 	//game loop
@@ -122,17 +117,6 @@ void Engine::start()
 		input();
 		update(dtAsSeconds);
 		draw();
-	}
-}
-
-void Engine::shoot(Bullet* aBullet)
-{
-	current_shot = Clock::now();
-	ms = std::chrono::duration_cast<milliseconds>(current_shot - previous_shot);
-	if (ms.count() > 100) {
-		aBullet->shoot();
-		previous_shot = current_shot;
-		//ammoNumber--;
 	}
 }
 
@@ -154,7 +138,7 @@ void Engine::killPlayer(Monster *aMonster)
 
 void Engine::setWindowSize(int widthWindow, int heightWindow){
 	
-	if (windowX&&windowY) {
+	if (widthWindow&&heightWindow) {
 		windowX = widthWindow;
 		windowY = heightWindow;
 	}
@@ -356,10 +340,10 @@ void Engine::setMapSize(float mapWidth, float mapHeight)
 void Engine::setAmmoNumber(int ammoN)
 {
 	if (ammoN) {
-		ammoNumber = ammoN;
+		thePlayer.ammoNumber = ammoN;
 	}
 	else {
-		ammoNumber = (rand() % 30) + 1;
+		thePlayer.ammoNumber = (rand() % 30) + 1;
 	}
 }
 
@@ -399,10 +383,14 @@ void Engine::setMonsterRandomPosition() {
 				allMonsters[i].getPosition()->y += secureZone;
 		}
 
-		//allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
-		//allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
-		//allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
-		//allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
+		//allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - monsterSize[0] * 0.5;
+		//allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + monsterSize[0] * 0.5;
+		//allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - monsterSize[1] * 0.5;
+		//allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + monsterSize[1] * 0.5;
+
+		//allMonsters[i].occupyNode();
+
+
 
 		for (j = i; j >= 0; j--) {
 			do {
@@ -420,15 +408,17 @@ void Engine::setMonsterRandomPosition() {
 						else
 							allMonsters[i].getPosition()->y += secureZone;
 					}
-
-					//allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - (monsterSize[0] / 2);
-					//allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + (monsterSize[0] / 2);
-					//allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - (monsterSize[1] / 2);
-					//allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + (monsterSize[1] / 2);
+					
 
 					spawnCollide = false;
 				}
 			} while (spawnCollide == true);
 		}
+		allMonsters[i].getShape()->left = allMonsters[i].getPosition()->x - 15;
+		allMonsters[i].getShape()->right = allMonsters[i].getPosition()->x + 15;
+		allMonsters[i].getShape()->top = allMonsters[i].getPosition()->y - 15;
+		allMonsters[i].getShape()->bottom = allMonsters[i].getPosition()->y + 15;
+
+		//allMonsters[i].occupyNode();
 	}
 }

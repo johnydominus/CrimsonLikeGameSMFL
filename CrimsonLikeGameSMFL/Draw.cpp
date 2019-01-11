@@ -66,10 +66,10 @@ void Engine::draw() {
 	}
 
 	//preparing bullets draw
-	for (i = 0; i < ammoNumber; i++) {
-		//if (*bullets[i].isShot()) {
-			bullets[i].getSprite()->setPosition(bullets[i].getRelatPosition()->x, bullets[i].getRelatPosition()->y);
-			mWindow.draw(*bullets[i].getSprite());
+	for (i = 0; i < ammoNumberStart; i++) {
+		//if (*thePlayer.bullets[i].isShot()) {
+			thePlayer.bullets[i].getSprite()->setPosition(thePlayer.bullets[i].getRelatPosition()->x, thePlayer.bullets[i].getRelatPosition()->y);
+			mWindow.draw(*thePlayer.bullets[i].getSprite());
 		//}
 	}
 

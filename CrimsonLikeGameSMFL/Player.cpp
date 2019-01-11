@@ -8,6 +8,8 @@ Player::Player()
 	mSprite.setTexture(mTexture);
 	mSprite.setOrigin (mSprite.getTexture()->getSize().x*0.5, mSprite.getTexture()->getSize().y*0.5);
 	alive = true;
+	previous_shot = Clock::now();
+	bulletNumber=0;
 }
 
 Player::~Player()
@@ -93,6 +95,30 @@ std::vector<float>* Player::getRelatMovement()
 	return &relatMovement;
 }
 
+void Player::shoot()
+{
+	if (ammoNumber>0) {
+		current_shot = Clock::now();
+		ms = std::chrono::duration_cast<milliseconds>(current_shot - previous_shot);
+		if (ms.count() > 200) {
+			bullets[bulletNumber].shoot();
+			previous_shot = current_shot;
+			bulletNumber++;
+			ammoNumber--;
+		}
+	}
+}
+
+void Player::fire() 
+{
+	mouseButtonPressed = true;
+}
+
+void Player::stopFire() 
+{
+	mouseButtonPressed = false;
+}
+
 void Player::moveLeft()
 {
 	leftPressed = true;
@@ -164,4 +190,25 @@ void Player::update(float elapsedTime)
 	shape.right = Position.x + (size[0] / 2.0);
 	shape.top = Position.y - (size[1] / 2.0);
 	shape.bottom = Position.y + (size[1] / 2.0);
+
+	/********************************
+	BULLETS HANDLING
+	********************************/
+
+	//updating each shot bullet position
+	if (mouseButtonPressed) {
+		shoot();
+	}
+
+	for (i = 0; i < bulletMax; i++) {
+		bullets[i].update(Position, relatPosition, elapsedTime);
+	}
+
+	//respawn one bullet if they ended
+	if (ammoNumber == 0) {
+		if (!*bullets[bulletNumber-1].isShot()) {
+			ammoNumber++;
+			bulletNumber--;
+		}
+	}
 }

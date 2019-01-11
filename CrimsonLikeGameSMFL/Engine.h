@@ -19,7 +19,6 @@ private:
 	Map theMap;
 	Reticle theReticle;
 	Monster* allMonsters;
-	Bullet* bullets;
 
 	sf::Sprite** mapSprites;
 	sf::Sprite* fenceSpritesX;
@@ -30,20 +29,13 @@ private:
 
 	aPOINT* enemiesNextSteps;
 	SCORE score{0,0};
-	
-	typedef std::chrono::high_resolution_clock Clock;
-	typedef std::chrono::milliseconds milliseconds;
-	Clock::time_point previous_shot;
-	Clock::time_point current_shot;
-	milliseconds ms;
 
 	bool* monstersCollide;
-	bool mouseButtonPressed;
 
 	int enemiesAlive;
 	float secureZone = 399, angle, spriteSizeX, spriteSizeY;
 
-	int i, j, a, b, c, d, windowX, windowY, mapX, mapY, ammoNumber, enemiesNumber;
+	int i, j, a, b, c, d, windowX, windowY, mapX, mapY, enemiesNumber;
 	int mapXstart=0, mapYstart=0, ammoNumberStart=0, enemiesNumberStart=0;
 
 	void input();
@@ -52,8 +44,6 @@ private:
 
 	void killMonster(Monster* aMonster, Bullet* aBullet);
 	void killPlayer(Monster*);
-	void shoot(Bullet* aBullet);
-	Bullet* getBullet(int i);
 
 	void setWindowSize(int mapX, int mapY);
 	void setMapSize(float mapWidth, float mapHeight);

@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "Player.h"
 #include <ctime>
+#include <cmath>
 #include <Windows.h>
 
 class Monster :
@@ -18,7 +19,7 @@ private:
 	aPOINT playerRelatPosition;
 	aPOINT nextStep;
 	aRECT shape;
-	aRECT nextShape;
+	//aRECT nextShape;
 
 	std::vector<float> size{ 30,30 };
 	std::vector<float> playerRelatMovement{ 0,0 };
@@ -35,6 +36,9 @@ private:
 
 	Player* thePlayer;
 	Map* theMap;
+
+	aPOINT mNode;
+	aPOINT mNextNode;
 
 public:
 	Monster();
@@ -61,10 +65,10 @@ public:
 	void setPlayer(Player* aPlayer);
 	void setMap(Map* aMap);
 
-	//void occupyNode();
+	void occupyNode();
 	//void occupyNextNode();
 
-	aPOINT checkUpdate(float elapsedTime);
-	void update(float elapsedTime, aPOINT position);
+	//aPOINT checkUpdate();
+	void update();
 };
 

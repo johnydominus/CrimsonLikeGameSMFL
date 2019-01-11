@@ -35,9 +35,9 @@ void Engine::input() {
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		mouseButtonPressed = true;
+		thePlayer.fire();
 	}
 	else {
-		mouseButtonPressed = false;
+		thePlayer.stopFire();
 	}
 }

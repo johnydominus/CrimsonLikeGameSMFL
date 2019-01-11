@@ -6,6 +6,7 @@ Reticle::Reticle()
 {
 	mTexture.loadFromFile("img/reticle.png");
 	mSprite.setTexture(mTexture);
+	mSprite.setOrigin(mSprite.getTexture()->getSize().x*0.5, mSprite.getTexture()->getSize().y*0.5);
 	ShowCursor(false);
 }
 
@@ -58,20 +59,15 @@ void Reticle::setScreenPosition(float x, float y)
 	screenPosition.y = y;
 }
 
-void Reticle::setPlayer(Player * aPlayer)
-{
-	thePlayer = aPlayer;
-}
-
-void Reticle::update()
+void Reticle::update(aPOINT* playerPosition, aPOINT* playerRelPosition)
 {
 	GetCursorPos(&screenPosition);
 
-	Position.x = thePlayer->getPosition()->x + (screenPosition.x - thePlayer->getRelatPosition()->x);
-	Position.y = thePlayer->getPosition()->y + (screenPosition.y - thePlayer->getRelatPosition()->y);
+	Position.x = playerPosition->x + (screenPosition.x - playerRelPosition->x);
+	Position.y = playerPosition->y + (screenPosition.y - playerRelPosition->y);
 
-	direction[0] = screenPosition.x - thePlayer->getRelatPosition()->x;
-	direction[1] = screenPosition.y - thePlayer->getRelatPosition()->y;
+	direction[0] = screenPosition.x - playerRelPosition->x;
+	direction[1] = screenPosition.y - playerRelPosition->y;
 
 	pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
 
