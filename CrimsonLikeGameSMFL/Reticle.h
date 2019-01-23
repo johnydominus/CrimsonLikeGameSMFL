@@ -20,15 +20,15 @@ public:
 	Reticle();
 	~Reticle();
 
-	sf::Sprite* getSprite();
+	sf::Sprite* getSprite() override;
 
 	POINT* getScreenPosition();
-	aPOINT* getPosition();
-	aPOINT* getRelatPosition();
+	aPOINT* getPosition() override;
+	aPOINT* getRelatPosition() override;
 	std::vector<float>* getDirection();
 
-	void setPosition(float x, float y);
-	void setRelativePosition(float x, float y);
+	void setPosition(float x, float y) override;
+	void setRelativePosition(float x, float y) override;
 	void setScreenPosition(float x, float y);
 
 	void update(aPOINT* playerPosition, aPOINT* playerRelPosition);

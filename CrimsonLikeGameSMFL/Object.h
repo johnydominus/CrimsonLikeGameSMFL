@@ -31,20 +31,20 @@ struct SCORE
 class Object
 {
 private:
+	sf::Sprite mSprite;
 	sf::Texture mTexture;
+	aPOINT Position;
+	aPOINT relatPosition;
 
 public:
 	Object();
 	~Object();
 
-	aPOINT Position;
-	aPOINT relatPosition;
-	sf::Sprite mSprite;
-
 	virtual aPOINT* getPosition() = 0;
 	virtual aPOINT* getRelatPosition() = 0;
 	virtual sf::Sprite* getSprite() = 0;
 
+	virtual void setPosition(float x, float y) = 0;
 	virtual void setRelativePosition(float x, float y) = 0;
 };
 

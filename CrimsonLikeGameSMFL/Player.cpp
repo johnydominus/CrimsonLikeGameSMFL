@@ -4,12 +4,46 @@
 
 Player::Player()
 {
-	mTexture.loadFromFile("img/player.png");
+	mTexture.loadFromFile("img/player-monster.png");
 	mSprite.setTexture(mTexture);
-	mSprite.setOrigin (mSprite.getTexture()->getSize().x*0.5, mSprite.getTexture()->getSize().y*0.5);
 	alive = true;
 	previous_shot = Clock::now();
 	bulletNumber=0;
+
+	for (i = 0; i < 8; i++) {
+		rectTextures.push_back(sf::IntRect());
+		rectTextures[i].width = 45;
+		rectTextures[i].height = 46;
+	}
+
+	sprtIter = rectTextures.begin();
+
+	rectTextures[0].left = 1;
+	rectTextures[0].top = 1;
+
+	rectTextures[1].left = 48;
+	rectTextures[1].top = 1;
+
+	rectTextures[2].left = 96;
+	rectTextures[2].top = 1;
+
+	rectTextures[3].left = 144;
+	rectTextures[3].top = 1;
+
+	rectTextures[4].left = 1;
+	rectTextures[4].top = 49;
+
+	rectTextures[5].left = 49;
+	rectTextures[5].top = 49;
+
+	rectTextures[6].left = 97;
+	rectTextures[6].top = 49;
+
+	rectTextures[7].left = 145;
+	rectTextures[7].top = 49;
+
+	mSprite.setTextureRect(*sprtIter);
+	mSprite.setOrigin(mSprite.getTextureRect().width*0.5, mSprite.getTextureRect().height*0.5);
 }
 
 Player::~Player()
@@ -161,7 +195,7 @@ void Player::stopDown()
 
 void Player::update(float elapsedTime)
 {
-	if (rightPressed && ((Position.x + speed * elapsedTime < mapSize[0]))) 
+	if (rightPressed && ((Position.x + speed * elapsedTime < mapSize[0])))
 		Position.x += speed * elapsedTime;
 	else if (rightPressed && ((Position.x + speed * elapsedTime >= mapSize[0]))) 
 		Position.x = mapSize[0];
@@ -180,6 +214,22 @@ void Player::update(float elapsedTime)
 		Position.y += speed * elapsedTime;
 	else if(downPressed && ((Position.y + speed * elapsedTime >= mapSize[1])))
 		Position.y = mapSize[1];
+
+	if (downPressed || leftPressed || rightPressed || upPressed) {
+		if (cntr == 20) {
+			cntr = 0;
+			if (sprtIter == rectTextures.end()) {
+				sprtIter = rectTextures.begin();
+				mSprite.setTextureRect(*sprtIter);
+			}
+			else
+			{
+				mSprite.setTextureRect(*sprtIter);
+				++sprtIter;
+			}
+		}
+		cntr++;
+	}
 
 	relatMovement[0] = (float)Position.x - (float)prevPosition.x;
 	relatMovement[1] = (float)Position.y - (float)prevPosition.y;

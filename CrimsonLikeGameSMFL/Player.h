@@ -20,10 +20,12 @@ private:
 	std::vector<float> size{ 25,25 };
 	std::vector<float> mapSize{ 0,0 };
 	std::vector<float> relatMovement{ 0,0 };
+	std::vector<sf::IntRect> rectTextures;
+	std::vector<sf::IntRect>::iterator sprtIter;
 
 	float speed = 120.0;
 	bool alive;
-	int i, j;
+	int i, j, cntr = 0;
 
 	bool leftPressed;
 	bool rightPressed;
@@ -34,11 +36,11 @@ public:
 	Player();
 	~Player();
 
-	sf::Sprite* getSprite();
+	sf::Sprite* getSprite() override;
 	sf::Texture* getTexture();
 
-	aPOINT* getPosition();
-	aPOINT* getRelatPosition();
+	aPOINT* getPosition() override;
+	aPOINT* getRelatPosition() override;
 	aPOINT* getPrevPosition();
 	aRECT* getShape();
 
@@ -61,8 +63,8 @@ public:
 	bool* isAlive();
 
 
-	void setPosition(float x, float y);
-	void setRelativePosition(float x, float y);
+	void setPosition(float x, float y) override;
+	void setRelativePosition(float x, float y) override;
 	void setSize(float x, float y);
 	void setSpeed(float x);
 	void setAlive(bool x);

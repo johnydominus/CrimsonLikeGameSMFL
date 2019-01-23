@@ -33,13 +33,13 @@ public:
 	void fillTheGrid(int mapWidth, int mapHeigth);
 	int gridX, gridY;
 	
-	sf::Sprite* getSprite();
-	aPOINT* getPosition();
-	aPOINT* getRelatPosition();
+	sf::Sprite* getSprite() override;
+	aPOINT* getPosition() override;
+	aPOINT* getRelatPosition() override;
 	std::vector<float>* getSize();
 
-	void setPosition(float x, float y);
-	void setRelativePosition(float x, float y);
+	void setPosition(float x, float y) override;
+	void setRelativePosition(float x, float y) override;
 	void setSize(float x, float y);
 	void setPlayer(Player* aPlayer);
 

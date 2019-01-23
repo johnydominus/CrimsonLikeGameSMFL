@@ -31,16 +31,16 @@ public:
 	Bullet();
 	~Bullet();
 
-	sf::Sprite* getSprite();
+	sf::Sprite* getSprite() override;
 
-	aPOINT* getPosition();
-	aPOINT* getRelatPosition();
+	aPOINT* getPosition() override;
+	aPOINT* getRelatPosition() override;
 
 	float* getSpeed();
 	bool* isShot();
 
-	void setPosition(float x, float y);
-	void setRelativePosition(float x, float y);
+	void setPosition(float x, float y) override;
+	void setRelativePosition(float x, float y) override;
 	void setSpeed(float x);
 	void setShot(bool x);
 
