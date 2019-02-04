@@ -14,8 +14,6 @@ private:
 	aPOINT Position;
 	std::vector<float> direction{ 0,0 };
 	
-	float pathLength;
-
 public:
 	Reticle();
 	~Reticle();

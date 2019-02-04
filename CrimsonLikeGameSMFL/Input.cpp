@@ -3,6 +3,7 @@
 
 void Engine::input() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+		_CrtDumpMemoryLeaks();
 		mWindow.close();
 	}
 	

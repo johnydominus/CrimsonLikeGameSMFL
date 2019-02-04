@@ -52,6 +52,12 @@ void Bullet::setRelativePosition(float x, float y)
 	relatPosition.y = y;
 }
 
+void Bullet::setDirection(float x, float y)
+{
+	direction[0] = x;
+	direction[1] = y;
+}
+
 void Bullet::setSpeed(float x)
 {
 	speed = x;
@@ -67,14 +73,14 @@ void Bullet::setReticle(Reticle * aReticle)
 	theReticle = aReticle;
 }
 
-void Bullet::shoot()
+void Bullet::setMovement()
 {
-	setShot(true);
-
 	direction[0] = theReticle->getScreenPosition()->x - relatPosition.x;
 	direction[1] = theReticle->getScreenPosition()->y - relatPosition.y;
 
-	pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
+	auto pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
+	auto theAngle = -(atan2(theReticle->getScreenPosition()->x - relatPosition.x, theReticle->getScreenPosition()->y - relatPosition.y) * 180.0 / 3.141592);
+	mSprite.setRotation(theAngle);
 
 	direction[0] /= pathLength;
 	direction[1] /= pathLength;
@@ -82,8 +88,6 @@ void Bullet::shoot()
 	vSpeed[0] = direction[0] * speed;
 	vSpeed[1] = direction[1] * speed;
 
-	theAngle = -(atan2(theReticle->getScreenPosition()->x - relatPosition.x, theReticle->getScreenPosition()->y - relatPosition.y) * 180.0 / 3.141592);
-	mSprite.setRotation(theAngle);
 }
 
 void Bullet::setMapSize(std::vector<float> aMapSize)

@@ -10,7 +10,7 @@ Player::Player()
 	previous_shot = Clock::now();
 	bulletNumber=0;
 
-	for (i = 0; i < 8; i++) {
+	for (auto i = 0; i < 8; i++) {
 		rectTextures.push_back(sf::IntRect());
 		rectTextures[i].width = 45;
 		rectTextures[i].height = 46;
@@ -48,6 +48,7 @@ Player::Player()
 
 Player::~Player()
 {
+	delete[] bullets;
 }
 
 aPOINT* Player::getPosition()
@@ -65,19 +66,14 @@ aPOINT * Player::getPrevPosition()
 	return &prevPosition;
 }
 
-aRECT * Player::getShape()
-{
-	return &shape;
-}
-
-std::vector<float>* Player::getSize()
-{
-	return &size;
-}
-
 sf::Sprite* Player::getSprite()
 {
 	return &mSprite;
+}
+
+sf::Texture * Player::getTexture()
+{
+	return &mTexture;
 }
 
 float * Player::getSpeed()
@@ -90,6 +86,16 @@ bool * Player::isAlive()
 	return &alive;
 }
 
+Bullet * Player::getBullet(int i)
+{
+	return &bullets[i];
+}
+
+void Player::fillAmmo()
+{
+	bullets = new Bullet[ammoNumber];
+}
+
 void Player::setPosition(float x, float y)
 {
 	Position.x = x;
@@ -100,12 +106,6 @@ void Player::setRelativePosition(float x, float y)
 {
 	relatPosition.x = x;
 	relatPosition.y = y;
-}
-
-void Player::setSize(float x, float y)
-{
-	size[0] = x;
-	size[1] = y;
 }
 
 void Player::setSpeed(float x)
@@ -135,7 +135,8 @@ void Player::shoot()
 		current_shot = Clock::now();
 		ms = std::chrono::duration_cast<milliseconds>(current_shot - previous_shot);
 		if (ms.count() > 200) {
-			bullets[bulletNumber].shoot();
+			bullets[bulletNumber].setShot(true);
+			bullets[bulletNumber].setMovement();
 			previous_shot = current_shot;
 			bulletNumber++;
 			ammoNumber--;
@@ -236,11 +237,6 @@ void Player::update(float elapsedTime)
 
 	prevPosition = Position;
 
-	shape.left = Position.x - (size[0] / 2.0);
-	shape.right = Position.x + (size[0] / 2.0);
-	shape.top = Position.y - (size[1] / 2.0);
-	shape.bottom = Position.y + (size[1] / 2.0);
-
 	/********************************
 	BULLETS HANDLING
 	********************************/
@@ -250,7 +246,7 @@ void Player::update(float elapsedTime)
 		shoot();
 	}
 
-	for (i = 0; i < bulletMax; i++) {
+	for (auto i = 0; i < bulletMax; i++) {
 		bullets[i].update(Position, relatPosition, elapsedTime);
 	}
 
@@ -259,6 +255,8 @@ void Player::update(float elapsedTime)
 		if (!*bullets[bulletNumber-1].isShot()) {
 			ammoNumber++;
 			bulletNumber--;
+			bullets[bulletNumber].setMovement();
+			bullets[bulletNumber].update(Position,relatPosition,elapsedTime);
 		}
 	}
 }

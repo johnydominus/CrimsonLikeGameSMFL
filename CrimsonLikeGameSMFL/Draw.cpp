@@ -6,9 +6,9 @@ void Engine::draw() {
 	
 	//preparing map draw
 	spriteSizeY = 0;
-	for (i = 0; i < a; i ++) {
+	for (auto i = 0; i < mapSpritesYnumber; i ++) {
 		spriteSizeX = 0;
-		for (j = 0; j < b; j ++) {
+		for (auto j = 0; j < mapSpritesXnumber; j ++) {
 			mapSprites[i][j].setPosition(theMap.getRelatPosition()->x /*- (windowX / 2)*/ + spriteSizeX, theMap.getRelatPosition()->y /*- (windowY / 2)*/ + spriteSizeY);
 			mWindow.draw(mapSprites[i][j]);
 			//theMap.mSprite.setPosition(theMap.relatPosition.x, theMap.relatPosition.y);
@@ -20,33 +20,45 @@ void Engine::draw() {
 	
 	//preparing fence draw
 	spriteSizeX = 0;
-	for (i = 0; i < c / 2; i++) {
+	for (auto i = 0; i < fenceSpritesXnumber / 2; i++) {
 		fenceSpritesX[i].setPosition(theMap.getRelatPosition()->x + ((float)windowX / 2.0) + spriteSizeX - theFenceTexture.getSize().y, theMap.getRelatPosition()->y + ((float)windowY / 2.0) - theFenceTexture.getSize().y);
 		mWindow.draw(fenceSpritesX[i]);
 		spriteSizeX += theFenceTexture.getSize().x;
 	}
 	spriteSizeX = 0;
-	for (i = c / 2; i < c; i++) {
+	for (auto i = fenceSpritesXnumber / 2; i < fenceSpritesXnumber; i++) {
 		fenceSpritesX[i].setPosition(theMap.getRelatPosition()->x + (windowX / 2) + spriteSizeX, theMap.getRelatPosition()->y + (windowY / 2) + mapY);
 		mWindow.draw(fenceSpritesX[i]);
 		spriteSizeX += theFenceTexture.getSize().x;
 	}
 
 	spriteSizeY = 0;
-	for (i = 0; i < d / 2; i++) {
+	for (auto i = 0; i < fenceSpritesYnumber / 2; i++) {
 		fenceSpritesY[i].setPosition(theMap.getRelatPosition()->x + ((float)windowX / 2.0), theMap.getRelatPosition()->y + ((float)windowY / 2.0) + spriteSizeY);
 		mWindow.draw(fenceSpritesY[i]);
 		spriteSizeY += theFenceTexture.getSize().x;
 	}
 	spriteSizeY = 0;
-	for (i = d / 2; i < d; i++) {
+	for (auto i = fenceSpritesYnumber / 2; i < fenceSpritesYnumber; i++) {
 		fenceSpritesY[i].setPosition(theMap.getRelatPosition()->x + ((float)windowX / 2.0) + (float)mapX +theFenceTexture.getSize().y, theMap.getRelatPosition()->y + ((float)windowY / 2.0) + spriteSizeY);
 		mWindow.draw(fenceSpritesY[i]);
 		spriteSizeY += theFenceTexture.getSize().x;
 	}
 
+	//testing node ocuppation draw
+	//for (auto i = 0; i < theMap.gridY; i++) {
+	//	for (auto j = 0; j < theMap.gridX; j++) {
+	//		if (theMap.mGrid[i][j].occupied)
+	//			theMap.squareSprite.setTexture(theMap.squareTextureRed);
+	//		else
+	//			theMap.squareSprite.setTexture(theMap.squareTextureGreen);
+	//		theMap.squareSprite.setPosition(theMap.getRelatPosition()->x + (windowX/2) + theMap.mGrid[i][j].j * theMap.getMonster(0)->getSprite()->getTextureRect().width, theMap.getRelatPosition()->y + (windowY / 2) + theMap.mGrid[i][j].i * theMap.getMonster(0)->getSprite()->getTextureRect().height);
+	//		mWindow.draw(theMap.squareSprite);
+	//	}
+	//}
+
 	//preparing player draw
-	angle = -(atan2(theReticle.getScreenPosition()->x - thePlayer.getRelatPosition()->x, theReticle.getScreenPosition()->y - thePlayer.getRelatPosition()->y) * 180.0 / 3.141592);
+	auto angle = -(atan2(theReticle.getScreenPosition()->x - thePlayer.getRelatPosition()->x, theReticle.getScreenPosition()->y - thePlayer.getRelatPosition()->y) * 180.0 / 3.141592);
 	thePlayer.getSprite()->setPosition (thePlayer.getRelatPosition()->x, thePlayer.getRelatPosition()->y);
 	thePlayer.getSprite()->setRotation(angle);
 	mWindow.draw(*thePlayer.getSprite());
@@ -56,20 +68,19 @@ void Engine::draw() {
 	mWindow.draw(*theReticle.getSprite());
 	
 	//preparing monsters draw
-	for (i = 0; i < enemiesNumber; i++) {
-		if (*allMonsters[i].isAlive()) {
-			angle = -(atan2(thePlayer.getRelatPosition()->x - allMonsters[i].getRelatPosition()->x, thePlayer.getRelatPosition()->y - allMonsters[i].getRelatPosition()->y) * 180.0 / 3.141592);
-			allMonsters[i].getSprite()->setPosition(allMonsters[i].getRelatPosition()->x, allMonsters[i].getRelatPosition()->y);
-			allMonsters[i].getSprite()->setRotation(angle);
-			mWindow.draw(*allMonsters[i].getSprite());
+	for (auto i = 0; i < theMap.enemiesNumber; i++) {
+		if (*theMap.getMonster(i)->isAlive()) {
+			theMap.getMonster(i)->getSprite()->setPosition(theMap.getMonster(i)->getRelatPosition()->x, theMap.getMonster(i)->getRelatPosition()->y);
+			theMap.getMonster(i)->getSprite()->setRotation(*theMap.getMonster(i)->getAngle());
+			mWindow.draw(*theMap.getMonster(i)->getSprite());
 		}
 	}
 
 	//preparing bullets draw
-	for (i = 0; i < ammoNumberStart; i++) {
-		if (*thePlayer.bullets[i].isShot()) {
-			thePlayer.bullets[i].getSprite()->setPosition(thePlayer.bullets[i].getRelatPosition()->x, thePlayer.bullets[i].getRelatPosition()->y);
-			mWindow.draw(*thePlayer.bullets[i].getSprite());
+	for (auto i = 0; i < ammoNumberStart; i++) {
+		if (*thePlayer.getBullet(i)->isShot()) {
+			thePlayer.getBullet(i)->getSprite()->setPosition(thePlayer.getBullet(i)->getRelatPosition()->x, thePlayer.getBullet(i)->getRelatPosition()->y);
+			mWindow.draw(*thePlayer.getBullet(i)->getSprite());
 		}
 	}
 

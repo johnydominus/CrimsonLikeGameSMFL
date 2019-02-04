@@ -7,6 +7,7 @@
 #include <vector>
 #include "SFML/Graphics.hpp"
 #include <Windows.h> 
+#include <memory>
 
 struct aPOINT
 {
@@ -26,6 +27,15 @@ struct SCORE
 {
 	int player;
 	int monsters;
+};
+
+struct Node {
+	bool occupied;
+	aPOINT centerPosition;
+
+	int i;
+	int j;
+	int monsterID;
 };
 
 class Object

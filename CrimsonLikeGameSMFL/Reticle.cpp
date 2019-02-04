@@ -69,7 +69,7 @@ void Reticle::update(aPOINT* playerPosition, aPOINT* playerRelPosition)
 	direction[0] = screenPosition.x - playerRelPosition->x;
 	direction[1] = screenPosition.y - playerRelPosition->y;
 
-	pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
+	auto pathLength = sqrt(pow(direction[0], 2) + pow(direction[1], 2));
 
 	direction[0] /= pathLength;
 	direction[1] /= pathLength;
