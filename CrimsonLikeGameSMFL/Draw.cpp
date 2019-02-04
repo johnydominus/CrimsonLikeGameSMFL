@@ -45,17 +45,19 @@ void Engine::draw() {
 		spriteSizeY += theFenceTexture.getSize().x;
 	}
 
-	//testing node ocuppation draw
-	//for (auto i = 0; i < theMap.gridY; i++) {
-	//	for (auto j = 0; j < theMap.gridX; j++) {
-	//		if (theMap.mGrid[i][j].occupied)
-	//			theMap.squareSprite.setTexture(theMap.squareTextureRed);
-	//		else
-	//			theMap.squareSprite.setTexture(theMap.squareTextureGreen);
-	//		theMap.squareSprite.setPosition(theMap.getRelatPosition()->x + (windowX/2) + theMap.mGrid[i][j].j * theMap.getMonster(0)->getSprite()->getTextureRect().width, theMap.getRelatPosition()->y + (windowY / 2) + theMap.mGrid[i][j].i * theMap.getMonster(0)->getSprite()->getTextureRect().height);
-	//		mWindow.draw(theMap.squareSprite);
-	//	}
-	//}
+	//testing node ocuppation draw (if game started in developer mode)
+	if (devMode) {
+		for (auto i = 0; i < theMap.gridY; i++) {
+			for (auto j = 0; j < theMap.gridX; j++) {
+				if (theMap.mGrid[i][j].occupied)
+					theMap.squareSprite.setTexture(theMap.squareTextureRed);
+				else
+					theMap.squareSprite.setTexture(theMap.squareTextureGreen);
+				theMap.squareSprite.setPosition(theMap.getRelatPosition()->x + (windowX/2) + theMap.mGrid[i][j].j * theMap.getMonster(0)->getSprite()->getTextureRect().width, theMap.getRelatPosition()->y + (windowY / 2) + theMap.mGrid[i][j].i * theMap.getMonster(0)->getSprite()->getTextureRect().height);
+				mWindow.draw(theMap.squareSprite);
+			}
+		}
+	}
 
 	//preparing player draw
 	auto angle = -(atan2(theReticle.getScreenPosition()->x - thePlayer.getRelatPosition()->x, theReticle.getScreenPosition()->y - thePlayer.getRelatPosition()->y) * 180.0 / 3.141592);

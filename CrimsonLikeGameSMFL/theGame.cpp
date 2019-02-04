@@ -14,6 +14,7 @@
 //#include <vld.h>
 
 int widthWindow = 0, heightWindow = 0, mapWidth = 0, mapHeight = 0, ammoN = 0, enemiesN = 0;
+bool dev_mode=false;
 
 void provideInputParameters(int argc, char* argv[]) {
 	char * pEnd;
@@ -41,6 +42,9 @@ void provideInputParameters(int argc, char* argv[]) {
 			else if (!strcmp(argv[i], "-num_ammo")) {
 				ammoN = strtol(argv[i + 1], NULL, 10);
 			}
+			else if (!strcmp(argv[i], "-dev_mode")) {
+				dev_mode = true;
+			}
 		}
 	}
 }
@@ -50,7 +54,7 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	provideInputParameters(argc, argv);
 
-	Engine theEngine(widthWindow, heightWindow, mapWidth, mapHeight, ammoN, enemiesN);
+	Engine theEngine(widthWindow, heightWindow, mapWidth, mapHeight, ammoN, enemiesN, dev_mode);
 
 	theEngine.start();
 

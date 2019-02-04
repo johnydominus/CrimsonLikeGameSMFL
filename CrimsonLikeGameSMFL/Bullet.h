@@ -30,7 +30,6 @@ public:
 	~Bullet();
 
 	sf::Sprite* getSprite() override;
-
 	aPOINT* getPosition() override;
 	aPOINT* getRelatPosition() override;
 

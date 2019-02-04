@@ -4,21 +4,33 @@
 void Engine::update(float timeInSeconds) {
 	
 	std::stringstream theStringStream;
-	theStringStream <<    "SCORE:\nPlayer:"<<score.player
-					<<"    Monsters:"<<score.monsters<<std::endl<< std::endl
-					<<    "MonstersNum:" << theMap.enemiesAlive 
-					<<"    Ammo:" << thePlayer.ammoNumber 
-					<<"    MapSize:" << mapX << "x" << mapY 
-					<<"    WindowSize:"<<windowX<<"x"<<windowY
-					<<"    MonstSpeed:" << *(theMap.getMonster(0)->getSpeed())<< std::endl
-					<<    "BullPos:"<<(int)thePlayer.getBullet(0)->getPosition()->x<<"x"<< (int)thePlayer.getBullet(0)->getPosition()->y
-					<<"    BullRelPos:"<< (int)thePlayer.getBullet(0)->getRelatPosition()->x<<"x"<<(int)thePlayer.getBullet(0)->getRelatPosition()->y<< std::endl
-					<<    "PlayerPos:" << (int)thePlayer.getPosition()->x << "x" << (int)thePlayer.getPosition()->y 
-					<<"    PlayRelPos" << (int)thePlayer.getRelatPosition()->x << "x" << (int)thePlayer.getRelatPosition()->y 
-					<<"    PlayerSpeed:" << *(thePlayer.getSpeed())<< std::endl
-					<<    "MapRelPos:"<< (int)theMap.getRelatPosition()->x<<"x"<< (int)theMap.getRelatPosition()->y<< std::endl
-					<<    "RetRelPos:" << theReticle.getScreenPosition()->x << "x" << theReticle.getScreenPosition()->y 
-					<<"    RetPos:"<<(int)theReticle.getPosition()->x<<"x"<<(int)theReticle.getPosition()->y;
+	if (devMode) {
+		theStringStream 
+			<< "SCORE:\nPlayer:" << score.player
+			<< "    Monsters:" << score.monsters << std::endl << std::endl
+			<< "MonstersNum:" << theMap.enemiesAlive
+			<< "    Ammo:" << thePlayer.ammoNumber
+			<< "    MapSize:" << mapX << "x" << mapY
+			<< "    WindowSize:" << windowX << "x" << windowY
+			<< "    MonstSpeed:" << *(theMap.getMonster(0)->getSpeed()) << std::endl
+			<< "BullPos:" << (int)thePlayer.getBullet(0)->getPosition()->x << "x" << (int)thePlayer.getBullet(0)->getPosition()->y
+			<< "    BullRelPos:" << (int)thePlayer.getBullet(0)->getRelatPosition()->x << "x" << (int)thePlayer.getBullet(0)->getRelatPosition()->y << std::endl
+			<< "PlayerPos:" << (int)thePlayer.getPosition()->x << "x" << (int)thePlayer.getPosition()->y
+			<< "    PlayRelPos" << (int)thePlayer.getRelatPosition()->x << "x" << (int)thePlayer.getRelatPosition()->y
+			<< "    PlayerSpeed:" << *(thePlayer.getSpeed()) << std::endl
+			<< "MapRelPos:" << (int)theMap.getRelatPosition()->x << "x" << (int)theMap.getRelatPosition()->y << std::endl
+			<< "RetRelPos:" << theReticle.getScreenPosition()->x << "x" << theReticle.getScreenPosition()->y
+			<< "    RetPos:" << (int)theReticle.getPosition()->x << "x" << (int)theReticle.getPosition()->y;
+	}
+	else
+	{
+		theStringStream
+			<< "SCORE:\nPlayer:" << score.player
+			<< "    Monsters:" << score.monsters << std::endl << std::endl
+			<< "MonstersNum:" << theMap.enemiesAlive
+			<< "    Ammo:" << thePlayer.ammoNumber << std::endl
+			<< "MonstSpeed:" << *(theMap.getMonster(0)->getSpeed()) << std::endl;
+	}
 	hud.setString(theStringStream.str());
 
 	if (*thePlayer.isAlive()&&theMap.enemiesAlive) {
@@ -38,7 +50,6 @@ void Engine::update(float timeInSeconds) {
 		thePlayer.bulletNumber = 0;
 		setAmmoNumber(ammoNumberStart);
 		theMap.deocuppyMap();
-
 		theMap.setEnemiesRandomSpeed();
 		theMap.enemiesAlive = theMap.enemiesNumber;
 

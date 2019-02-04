@@ -2,9 +2,11 @@
 #include "Engine.h"
 
 
-Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, int ammoN, int enemiesN)
+Engine::Engine(int widthWindow, int heightWindow, int mapWidth, int mapHeight, int ammoN, int enemiesN, bool dev_mode)
 {
 	srand(time(NULL));
+
+	devMode = dev_mode;
 
 	//setting game values
 	setWindowSize(widthWindow, heightWindow);
@@ -107,6 +109,9 @@ void Engine::start()
 
 	//game loop
 	while (mWindow.isOpen()) {
+		sf::Event event;
+		while (mWindow.pollEvent(event));
+
 		sf::Time dt = clock.restart();
 		float dtAsSeconds = dt.asSeconds();
 

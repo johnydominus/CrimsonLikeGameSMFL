@@ -49,10 +49,6 @@ public:
 	void occupyNode(int ID);
 	void deocuppyMap();
 	void freeNode(int ID);
-	bool isValid(int nodeX, int nodeY);
-	Node findBestNode(int ID);
-
-	void setNodesShape(int ID);
 	
 	sf::Sprite* getSprite() override;
 	bool nodesFree(int ID);
